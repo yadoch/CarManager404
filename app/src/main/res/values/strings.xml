@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">車輛管理系統</string>
+    <string name="lb_user">使用者</string>
+    <string name="lb_carnum">借用車號</string>
+    <string name="lb_date">借用日期</string>
+    <string name="lb_startkm">開始里程數</string>
+    <string name="lb_endkm">結束里程數</string>
+    <string name="lb_gasmoney">加油錢</string>
+    <string name="lb_memo">備註</string>
+    <string name="lb_temp"></string>
+
+    <string-array name="carNumList">
+        <item>--請選擇--</item>
+        <item>NA-0001</item>
+        <item>NA-0002</item>
+        <item>NA-0003</item>
+    </string-array>
+
+    <string name="carNumList_prompt">請選擇</string>
+</resources>
