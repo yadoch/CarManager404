@@ -1,9 +1,13 @@
 package tw.com.abc.carmanager404;
 
+// 目前手機為4.0.4 版,考量使用者的手機可能多為舊版本,故以4.0.4 為主
+
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -41,10 +45,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // 加此位置選日期才不會閃退-待查
+                initComponent();
 
-        initComponent();
-
-        // sd 卡事前處理
+// sd 卡事前處理
         if (ContextCompat.checkSelfPermission(this,
                 // 要判斷的條件(網路,外部儲存裝置....)
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -72,11 +76,17 @@ public class MainActivity extends AppCompatActivity {
 
         // 下拉選項初始化
         spinnerInit();
+
+        // SQLite 連線
+        MyDBHelper dbHelper=new MyDBHelper(this,"CarManager",null,1);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
     }
     private void init(){
         if (!isPermissionOK) {
             finish();
         }else{
+            // initComponent();
             go();
         }
         //Log.i("brad", "start");
@@ -89,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void btnOk(View view) {
-
+    //檢查欄位是否填寫
         if ("".equals(edUser.getText().toString().trim())) {
             tvResult.setText(getString(R.string.lb_user) + "未填寫");
 
@@ -200,15 +210,44 @@ public class MainActivity extends AppCompatActivity {
         spnCarNum.setSelection(arrCarNum.getPosition("--請選擇--"));
 
     }
-    public void btnTest(View view){
+    public void btnSQLite(View view){
+        String strUser,strDate,strNum,strStartKm,strEndKm,strGasMoney,strMemo;
+        int intGasMoney,intStartKm,intEndKm;
+        strUser ="aaa";
+        strDate ="2017-10-20";
+        strNum="NA-001";
+        strStartKm="100";
+        strEndKm="200";
+        strGasMoney="300";
+        strMemo="手動測試資料";
 
+        intStartKm=Integer.parseInt(strStartKm);
+        intEndKm=Integer.parseInt(strEndKm);
+        intGasMoney=Integer.parseInt(strGasMoney);
+
+        // DB 參考
+        // _id integer primary key autoincrement,user text,carnum text,usedate date,startkm integer,endkm integer,gasmoney ineger,memo text,transid int,transdate date
+
+        //insert
+
+        ContentValues values = new ContentValues();
+        values.put("user",strUser);
+        values.put("carnum",strNum);
+        values.put("usedate",strDate);
+        values.put("startkm",intStartKm);
+        values.put("endkm",intEndKm);
+        values.put("gasmoney",intGasMoney);
+        values.put("memo",strMemo);
+        values.put("gasmoney",intGasMoney);
+        values.put("gasmoney",intGasMoney);
     }
+
     private AdapterView.OnItemSelectedListener spn =new AdapterView.OnItemSelectedListener(){
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             strCarNum=parent.getSelectedItem().toString();
-            Log.i("geoff",strCarNum);
+            // Log.i("geoff",strCarNum);
         }
 
         @Override

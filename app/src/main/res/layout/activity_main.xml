@@ -186,11 +186,11 @@
             android:onClick="btnOk"
             />
         <Button
-            android:id="@+id/btntest"
+            android:id="@+id/btnsqlite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="test"
-            android:onClick="btnTest"
+            android:text="本機資料庫"
+            android:onClick="btnSQLite"
             />
     </LinearLayout>
 
