@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText edDate,edUser,edStartKm,edEndKm,edGasMoney,edMemo;
     private boolean isPermissionOK;
     private ArrayAdapter<CharSequence> arrCarNum;
-
+    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         // SQLite 連線
         MyDBHelper dbHelper=new MyDBHelper(this,"CarManager",null,1);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        db = dbHelper.getReadableDatabase();
 
     }
     private void init(){
@@ -240,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
         values.put("memo",strMemo);
         values.put("gasmoney",intGasMoney);
         values.put("gasmoney",intGasMoney);
+        db.insert("CarManager",null,values);
     }
 
     private AdapterView.OnItemSelectedListener spn =new AdapterView.OnItemSelectedListener(){
