@@ -7,6 +7,7 @@ import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -28,6 +29,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isPermissionOK;
     private ArrayAdapter<CharSequence> arrCarNum;
     private SQLiteDatabase db;
+    private String TAG="geoff";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +143,11 @@ public class MainActivity extends AppCompatActivity {
             );
 */
             // 要加入網路連線判斷,避免出錯
-            updateDB();
+            // updateDB();
+
+            //先寫入SQLite,在判斷是否網路連線狀況把SQLite資料寫回Server
+
+            insSQLite();
             clean();
 
 
@@ -163,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
                 strEndKm= list.get(i).getcEndKm().toString();
                 strGasMoney= list.get(i).getcGasMoney().toString();
                 strMemo= list.get(i).getcGasMoney().toString();
+
                 for (i=0;i< list.size();i++){
                 try {
                     //URL url = new URL("http://10.1.1.85/carmanager.aspx?CarUser=zipoer&CarNum=0934&CarDate=2001-01-09&StartKm=1000&EndKm=1200&GasMoney=200&CarMemo=1dqdqfdqdq");
@@ -210,16 +218,27 @@ public class MainActivity extends AppCompatActivity {
         spnCarNum.setSelection(arrCarNum.getPosition("--請選擇--"));
 
     }
-    public void btnSQLite(View view){
+
+    public void insSQLite(){
         String strUser,strDate,strNum,strStartKm,strEndKm,strGasMoney,strMemo;
         int intGasMoney,intStartKm,intEndKm;
-        strUser ="aaa";
-        strDate ="2017-10-20";
-        strNum="NA-001";
-        strStartKm="100";
-        strEndKm="200";
-        strGasMoney="300";
-        strMemo="手動測試資料";
+        int i=0;
+
+        strUser= list.get(i).getcUser().toString();
+        strDate= list.get(i).getcDate().toString();
+        strNum=list.get(i).getcCarNum().toString();
+        strStartKm= list.get(i).getcStartKm().toString();
+        strEndKm= list.get(i).getcEndKm().toString();
+        strGasMoney= list.get(i).getcGasMoney().toString();
+        strMemo= list.get(i).getcGasMoney().toString();
+
+//        strUser ="aaa";
+//        strDate ="2017-10-20";
+//        strNum="NA-001";
+//        strStartKm="100";
+//        strEndKm="200";
+//        strGasMoney="300";
+//        strMemo="手動測試資料";
 
         intStartKm=Integer.parseInt(strStartKm);
         intEndKm=Integer.parseInt(strEndKm);
@@ -243,6 +262,24 @@ public class MainActivity extends AppCompatActivity {
         db.insert("CarManager",null,values);
     }
 
+    public void btnTest(View view){
+        getSQLite();
+    }
+
+    private void getSQLite() {
+        Cursor cursor = db.query("CarManager",null,null,null,null,null,null);
+        int count =cursor.getCount();
+
+        tvResult.setText("SQLite DB CarManager have:" + count + "Record!");
+
+        while (cursor.moveToNext()){
+            Log.i(TAG,"user:"+cursor.getString(1));
+        }
+        cursor.close();
+
+
+    }
+
     private AdapterView.OnItemSelectedListener spn =new AdapterView.OnItemSelectedListener(){
 
         @Override
@@ -262,8 +299,7 @@ public class MainActivity extends AppCompatActivity {
         arrCarNum = ArrayAdapter.createFromResource(MainActivity.this,
                 R.array.carNumList,
                 android.R.layout.simple_spinner_dropdown_item);
-        spnCarNum =(Spinner)findViewById(R.id.spncarnum);
-
+        spnCarNum =(Spinner) findViewById(R.id.spncarnum);
         spnCarNum.setAdapter(arrCarNum);
         spnCarNum.setOnItemSelectedListener(spn);
     }
